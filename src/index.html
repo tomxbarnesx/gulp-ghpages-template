@@ -2,6 +2,8 @@
 <html amp lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
     <script async src="https://cdn.ampproject.org/v0.js"></script>
     <script async custom-element="amp-video"
       src="https://cdn.ampproject.org/v0/amp-video-0.1.js"></script>
@@ -17,8 +19,9 @@
         crossorigin=""></script>
     <style>
       #detour-window {
-/*        margin-top: calc(var(--vh, 1vh) * 100);
-*/        height: 100vh;
+        font-family: Futura, sans-serif;
+        /*        margin-top: calc(var(--vh, 1vh) * 100); */      
+        height: 100vh;
         height: calc(var(--vh, 1vh) * 100);
         display: flex;
         position: relative;
@@ -38,20 +41,153 @@
       }
       #detourMap { 
         height: calc(var(--vh, 1vh) * 100);
-        width: calc(var(--vh, 1vh) * 135 * .45);
+        width: calc(var(--vh, 1vh) * 135 * .5);
+        background: #5f5d5d;
       }
-      @media (max-width: 768px) {
+      #init-button {
+        margin-top: 50%;
+        font-size: 250%;
+        background: white;
+      }
+      .loader {
+        font-size: 10px;
+        margin: auto;
+        text-indent: -9999em;
+        width: 11em;
+        height: 11em;
+        border-radius: 50%;
+        background: #ffffff;
+        background: -moz-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+        background: -webkit-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+        background: -o-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+        background: -ms-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+        background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        -webkit-animation: load3 1.4s infinite linear;
+        animation: load3 1.4s infinite linear;
+        -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+      }
+      .loader:before {
+        width: 50%;
+        height: 50%;
+        background: #ffffff;
+        border-radius: 100% 0 0 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: '';
+      }
+      .loader:after {
+        background: #000000;
+        width: 75%;
+        height: 75%;
+        border-radius: 50%;
+        content: '';
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+      }
+      /* MODAL Styles */
+      .sign-up-modal {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        width: auto;
+        height: 99vh;
+        z-index: 100;
+        background: black;
+        color: white;
+        padding: 1em 1.5em;
+        -webkit-transition: opacity 2s;
+        -moz-transition: opacity 2s;
+        -o-transition: opacity 2s;
+        transition: opacity 2s;
+        opacity: 0;
+        visibility: hidden;
+      }
+      .inner-border {
+        border: 5px solid black;
+        box-shadow: inset 0px 0px 0px 4px white;
+        box-sizing: border-box;
+      }
+
+      /* LAYERS STYLES */
+      .map-layer-container {
+        display: flex;
+        flex-direction: column;
+        background: white;
+        width: 45%;
+        padding: .5em .5em .5em;
+        height: auto;
+        position: absolute;
+        z-index: 1000;
+        bottom: 1.75em;
+        left: .5em;
+        color: black;
+        background: #ffffffd6;
+      }
+      .layer-button {
+        width: 1em;
+        height: 1em;
+        background: red;
+        margin: .5em;
+        border: 1px solid black;
+      }
+      .layer-toggle{
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .layer-toggle > p {
+        margin: 0;
+      }
+      .modal-close {
+        width: fit-content;
+        float: right;
+      }
+      .sign-up-modal.map-modal {
+        z-index: 1001;
+        height: fit-content;
+        max-height: 85vh;
+        padding: 2em;
+      }
+      .sign-up-modal.fade-in.fade-out{
+        opacity: 0;
+        position: absolute;
+      }
+      .sign-up-modal.fade-in {
+        opacity: 1;
+        visibility: visible; 
+      }
+      @media screen and (min-width: 1000px) { 
         #detour-master-container {
-          top: 0;
-          border-radius: 0em;
+          margin: auto;
+          height: calc(var(--vh, 1vh) * 100);
+          width: calc(var(--vh, 1vh) * 135 * .45);
         }
-      }
-      @media (min-width: 769px) { 
-        #detour-master-container {
-/*          top: -8em;
-*/          margin: auto;
-          height: calc(var(--vh, 1vh) * 90);
-          width: calc(var(--vh, 1vh) * 125 * .45);
+        .map-layer-container {          
+          bottom: 1.75em;
+          left: 1em;
+        }
+        .layer-button {
+          width: 1em;
+          height: 1em;
+        }
+        #detourMap { 
+          height: calc(var(--vh, 1vh) * 100);
+          width: calc(var(--vh, 1vh) * 135 * .45);
         }
       }
     </style>
