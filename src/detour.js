@@ -1,4 +1,4 @@
-let mapInit, data = {
+let mapInit, modalVis = false, data = {
 	fields: {
 		detour_map_center_lat: 36.307035,
 		detour_map_center_lng: -86.707002,
@@ -27,7 +27,7 @@ let disasterData = [
 	      	"popupContent": "The eastern seaboard is 2,000 feet lower than the Western seaboard. Increasingly turbulent noreastern winds will make severe flooding far more devestating as global temperatures increase.",
 	      	"show_on_map": true,
 	        "stroke": "#555555",
-	        "stroke-width": 2,
+	        "stroke-width": 1,
 	        "stroke-opacity": 1,
 	        "fill": "#2099ac",
 	        "fill-opacity": 0.5
@@ -399,7 +399,7 @@ let disasterData = [
 	      	"popupContent": "Earthquakes will also become more common as global temperatures rise. I'm not entirely sure why right now. But I'll find out.",
 	      	"show_on_map": true,
 	        "stroke": "#555555",
-	        "stroke-width": 2,
+	        "stroke-width": 1,
 	        "stroke-opacity": 1,
 	        "fill": "#c80013",
 	        "fill-opacity": 0.5
@@ -640,6 +640,7 @@ function createLayerToggles(layersContainer) {
 		let layerToggle = document.createElement("DIV");
 		let layerIcon = document.createElement("DIV");
 		let layerLabel = document.createElement("p");
+
 		layerToggle.classList.add("layer-toggle");
 		layerIcon.classList.add("layer-button");
 		layerIcon.id = layer.features[0].properties.risk;
@@ -647,12 +648,14 @@ function createLayerToggles(layersContainer) {
 		layerIcon.style.opacity = layer.features[0].properties["fill-opacity"];
 		layerLabel.classList.add("layer-label");
 		layerLabel.textContent = layer.features[0].properties.risk;
+
 		layerToggle.addEventListener("click", function(e){
 			currentVis = layer.features[0].properties.show_on_map;
 			layer.features[0].properties.show_on_map = !currentVis;
 			console.log(layer.features[0].properties.risk, layer.features[0].properties.show_on_map)
 			layerFilter(layer)
 		})
+
 		layerToggle.appendChild(layerIcon)
 		layerToggle.appendChild(layerLabel)
 		layerFragment.appendChild(layerToggle)
@@ -668,14 +671,7 @@ function createPopUp(feature, layer) {
 
 function layerCreate() {
 	let layersContainer = document.createElement("DIV");
-	// let introHeader = document.createElement("DIV");
-	// let showHide = document.createElement("DIV");
 	layersContainer.classList.add("map-layer-container");
-	// introHeader.textContent = "Tap layers on the map to read more. Toggle below show/hide."
-	// showHide.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill-rule="evenodd" clip-rule="evenodd"><path d="M23.245 20l-11.245-14.374-11.219 14.374-.781-.619 12-15.381 12 15.391-.755.609z"/></svg>'
-	// showHide.classList.add("showHide");
-	// layersContainer.appendChild(showHide);
-	// layersContainer.appendChild(introHeader);
 	detourContainer.appendChild(layersContainer);
 
 	for (testLayer in disasterData) {
@@ -688,32 +684,11 @@ function layerCreate() {
 		geoJSONlayers[disasterData[testLayer].features[0].properties.risk] = riskLayer;
 	}
 
-	// let riskLayer = L.geoJSON(disasterData, {
-	// 	    style: function(feature) {
-	// 	    	return {color: feature.properties.fill}
-	// 	    },
-	// 	    onEachFeature: function(feature) {
-	// 	    	// geoJSONlayers[feature.properties.risk] = feature;
-	// 	    }
-	// 	}).addTo(mapInit);
-
-	// letbigRisk = geometryToLayer(riskLayer)
-	// console.log(bigRisk)
-	// let riskLayer = L.geoJSON(disasterData, {
-	//     style: function(feature) {
-	//     	return {color: feature.properties.fill}
-	//     },
-	//     onEachFeature: function(feature) {
-	//     	// geoJSONlayers[feature.properties.risk] = feature;
-	//     }
-	// }).addTo(mapInit);
-
-	// geometryToLayer(riskLayer)
-	// console.log(geoJSONlayers)
 	createLayerToggles(layersContainer);
 }
 
 const fadeModal = (mapModal) => {
+	modalVis = !modalVis;
     let modal = document.getElementsByClassName("sign-up-modal")[0]
     modal.classList.add("fade-out");
 
@@ -739,12 +714,29 @@ const fadeModal = (mapModal) => {
     }, 600)
 }
 
+function modalCreateInfoButton(){
+	let modalTriggerButton = document.createElement("DIV");
+	modalTriggerButton.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 100 125" x="0px" y="0px"><title>58</title><path d="M50,5A45,45,0,1,0,95,50,45.05046,45.05046,0,0,0,50,5Zm0,82A37,37,0,1,1,87,50,37.0413,37.0413,0,0,1,50,87Z"/><rect x="46" y="41.31915" width="8" height="33.10638"/><rect x="46" y="25.57446" width="8" height="8"/></svg>')
+    // modalTriggerButton.insertAdjacentHTML('beforeend', '<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 202.978 202.978" style="enable-background:new 0 0 202.978 202.978;" xml:space="preserve"><g><g><g><g><path style="fill:#010002;" d="M100.942,0.001C44.9,0.304-0.297,45.98,0.006,102.031 c0.293,56.051,45.998,101.238,102.02,100.945c56.081-0.303,101.248-45.978,100.945-102.02 C202.659,44.886,157.013-0.292,100.942,0.001z M101.948,186.436c-46.916,0.234-85.108-37.576-85.372-84.492 c-0.244-46.907,37.537-85.157,84.453-85.411c46.926-0.254,85.167,37.596,85.421,84.483 C186.695,147.951,148.855,186.182,101.948,186.436z M116.984,145.899l-0.42-75.865l-39.149,0.254l0.078,16.6l10.63-0.059 l0.313,59.237l-11.275,0.039l0.088,15.857l49.134-0.264l-0.098-15.847L116.984,145.899z M102.065,58.837 c9.575-0.039,15.349-6.448,15.3-14.323c-0.254-8.07-5.882-14.225-15.095-14.186c-9.184,0.059-15.173,6.292-15.134,14.362 C87.185,52.555,93.028,58.906,102.065,58.837z"/></g></g></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>')
+    modalTriggerButton.classList.add("modal-info-button");
+    modalTriggerButton.addEventListener("click", () => {
+    	if (modalVis) {
+    		fadeModal(true)
+    	} else {
+    		modalTrigger()
+    	}
+    })
+    detourContainer.appendChild(modalTriggerButton);
+}
+
 function modalTrigger(){
+	modalVis = !modalVis
 	let modalFragment = document.createDocumentFragment();
     let modal = document.createElement("DIV");
     let modalHeader = document.createElement("H1");
     let modalBody = document.createElement("DIV");
     let modalX = document.createElement("DIV");
+
     modalX.classList.add("modal-close");
     modalX.insertAdjacentHTML('beforeend', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"/></svg>');
     modalX.addEventListener("click", () => {
@@ -759,13 +751,15 @@ function modalTrigger(){
     modal.appendChild(modalBody);
     modalFragment.appendChild(modal)
     detourContainer.appendChild(modalFragment)
+
   	modal.classList.add("fade-in")
 }
 
 function mapCreate() {
 	//LIKELY NEED SOME KIND OF IF STATEMENT TO TRIGGER MODAL
 	// ==> ?
-	modalTrigger()
+	modalTrigger();
+	modalCreateInfoButton();
 
 	initButton.style.display = "none";
 
@@ -780,7 +774,7 @@ function mapCreate() {
     //Initialize map =>
     mapInit = L.map('detourMap').setView([data.fields.detour_map_center_lat, data.fields.detour_map_center_lng], data.fields.detour_map_zoom);
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
         id: 'mapbox.streets',
         accessToken: 'pk.eyJ1IjoidG9teGJhcm5lc3giLCJhIjoiY2p1OTJsZDEwMXI1ajN5bzJ4NDhhNzVkcCJ9.EV4112N91Zp7z0tOS-bazg'
